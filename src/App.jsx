@@ -6,73 +6,51 @@ const Button = ({ onClick, texto }) => {
   )
 }
 
-const Result = ({texto, valor}) => {
-  return (
-    <p>{texto} {valor}</p>
-  )
-}
-
-const Statistics = ({good, neutral, bad}) => {
-
-  const calcularPromedio = (good, neutral, bad) => {
-    console.log('Promedio: ', (good - bad) / (good + neutral + bad))
-    return (good - bad) / (good + neutral + bad)
-  }
-
-  const calcularPorcentajePositivo = (good, neutral, bad) => {
-    console.log('Porcentaje positivo: ', (good / (good + neutral + bad)) * 100)
-    return (good / (good + neutral + bad)) * 100
-  }
-
-  if (good + bad + neutral === 0){
-    return (
-      <div>
-        <p>No hay feedback, padre</p>
-      </div>
-    )
-  }else{
-    return (
-      <div>
-        <Result texto='Good' valor={good} />
-        <Result texto='Neutral' valor={neutral} />  
-        <Result texto='Bad' valor={bad} />
-        <Result texto='All' valor={good + neutral + bad} />
-        <Result texto='Average' valor={calcularPromedio(good, neutral, bad)} />
-        <Result texto='Positive %' valor={calcularPorcentajePositivo(good, neutral, bad)}/>
-      </div>
-    )
-  }
-}
-
 const App = () => {
 
-  const [good, setGood] = useState(0)
-  const [neutral, setNeutral] = useState(0)
-  const [bad, setBad] = useState(0)
+  const anecdotes = [
+    'If it hurts, do it more often.',
+    'Adding manpower to a late software project makes it later!',
+    'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+    'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+    'Premature optimization is the root of all evil.',
+    'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.',
+    'Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.',
+    'The only way to go fast, is to go well.'
+  ]
+   
+  const [selected, setSelected] = useState(0)
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+  const [masVotada, setMasVotada] = useState(0)
 
-  const handleGood = () => {
-    console.log('Good. Valor antes: ', good, 'Valor nuevo:' , good + 1)
-    setGood(good + 1)
+  const handleAnecdote = () => {
+    setSelected(Math.floor(Math.random() * anecdotes.length))
   }
 
-  const handleBad = () => {
-    console.log('Bad. Valor antes: ', bad, 'Valor nuevo:' , bad + 1)
-    setBad(bad + 1)
-  }
-
-  const handleNeutral = () => {
-    console.log('Neutral. Valor antes: ', neutral, 'Valor nuevo: ', neutral + 1)
-    setNeutral(neutral + 1)
+  const handleVote = (selected) => {
+    setVotes(votes.map((vote, index) => {
+      if (index === selected) {
+        return vote + 1
+      }else{
+        return vote
+      }
+    }))
+    if (votes[selected] + 1 > votes[masVotada]){
+      setMasVotada(selected)
+    }
   }
 
   return (
     <div>
-      <h1>Give feedback!</h1>
-      <Button onClick={handleGood} texto='Good' />
-      <Button onClick={handleNeutral} texto='Neutral' />
-      <Button onClick={handleBad} texto='Bad' />
-      <h1>Statistics</h1>
-      <Statistics good={good} neutral={neutral} bad={bad} />
+      <h1>Anecdota del dia</h1>
+      <p>{anecdotes[selected]}</p>
+      <p>Tiene {votes[selected]} votos</p>
+      <Button onClick={() => handleVote(selected)} texto="Votar" />
+      <Button onClick={handleAnecdote} texto="Dame una anecdota" />
+
+      <h1>Anecdota con mas votos</h1>
+      <p>{anecdotes[masVotada]}</p>
+
     </div>
   )
 }
