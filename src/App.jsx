@@ -1,46 +1,78 @@
 import { useState } from 'react'
 
-const Display = ({ counter }) => <div>{counter}</div>
-
 const Button = ({ onClick, texto }) => {
   return (
     <button onClick={onClick}>{texto}</button>
   )
 }
 
-const History = (props) => {
-  if (props.allClicks.length === 0) {
-    return (
-      <div>
-        the app is used by pressing the buttons
-      </div>
-    )
-  }
+const Result = ({texto, valor}) => {
   return (
-    <div>
-      button press history: {props.allClicks.join(' ')}
-    </div>
+    <p>{texto} {valor}</p>
   )
 }
 
+const Statistics = ({good, neutral, bad}) => {
+
+  const calcularPromedio = (good, neutral, bad) => {
+    console.log('Promedio: ', (good - bad) / (good + neutral + bad))
+    return (good - bad) / (good + neutral + bad)
+  }
+
+  const calcularPorcentajePositivo = (good, neutral, bad) => {
+    console.log('Porcentaje positivo: ', (good / (good + neutral + bad)) * 100)
+    return (good / (good + neutral + bad)) * 100
+  }
+
+  if (good + bad + neutral === 0){
+    return (
+      <div>
+        <p>No hay feedback, padre</p>
+      </div>
+    )
+  }else{
+    return (
+      <div>
+        <Result texto='Good' valor={good} />
+        <Result texto='Neutral' valor={neutral} />  
+        <Result texto='Bad' valor={bad} />
+        <Result texto='All' valor={good + neutral + bad} />
+        <Result texto='Average' valor={calcularPromedio(good, neutral, bad)} />
+        <Result texto='Positive %' valor={calcularPorcentajePositivo(good, neutral, bad)}/>
+      </div>
+    )
+  }
+}
+
 const App = () => {
-  const [left, setLeft] = useState(0)
-  const [right, setRight] = useState(0)
-  const [allClicks, setAll] = useState([])
-  const [total, setTotal] = useState(0)
 
-  const handleLeftClick = () => (setLeft(left + 1), setAll(allClicks.concat('L')), setTotal(total + 1))
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
 
-  const handleRightClick = () => (setRight(right + 1), setAll(allClicks.concat('R')), setTotal(total + 1))
+  const handleGood = () => {
+    console.log('Good. Valor antes: ', good, 'Valor nuevo:' , good + 1)
+    setGood(good + 1)
+  }
+
+  const handleBad = () => {
+    console.log('Bad. Valor antes: ', bad, 'Valor nuevo:' , bad + 1)
+    setBad(bad + 1)
+  }
+
+  const handleNeutral = () => {
+    console.log('Neutral. Valor antes: ', neutral, 'Valor nuevo: ', neutral + 1)
+    setNeutral(neutral + 1)
+  }
 
   return (
     <div>
-      {left}
-      <Button onClick={handleLeftClick} texto='left' /> 
-      <Button onClick={handleRightClick} texto='right' /> 
-      {right}
-      <History allClicks={allClicks}/>
-      <p>Total: {total}</p>
+      <h1>Give feedback!</h1>
+      <Button onClick={handleGood} texto='Good' />
+      <Button onClick={handleNeutral} texto='Neutral' />
+      <Button onClick={handleBad} texto='Bad' />
+      <h1>Statistics</h1>
+      <Statistics good={good} neutral={neutral} bad={bad} />
     </div>
   )
 }
