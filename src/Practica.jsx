@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import PersonList from './components/PersonList'
+import phonebookService from './services/phonebook'
 
 const Practica = () => {
   const [persons, setPersons] = useState([])
   const [busqueda, setBusqueda] = useState('')
 
   const hook = () => {
-    console.log('effect')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        console.log('promise fulfilled')
-        setPersons(response.data)
+    console.log('Effect')
+    phonebookService
+      .getAll()
+      .then(data => {
+        console.log('Promise fulfilled')
+        setPersons(data)
       })
   }
   useEffect(hook, [])
-  console.log('cantidad de personas cargadas: ', persons.length)
+  console.log('Cantidad de personas cargadas: ', persons.length)
 
   return (
     <div>
@@ -27,7 +27,7 @@ const Practica = () => {
       <h2>Add a new</h2>
       <PersonForm persons={persons} setPersons={setPersons} />
       <h2>Numbers</h2>
-      <PersonList persons={persons} busqueda={busqueda} />
+      <PersonList persons={persons} busqueda={busqueda} setPersons={setPersons}/>
     </div>
   )
 }
