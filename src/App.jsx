@@ -1,11 +1,15 @@
 import { useState, useEffect} from 'react'
 import Note from './components/Note'
 import noteService from './services/notes'
+import Notification from './components/Notification'
+import './index.css'
+import Footer from './components/Footer'
 
 const App = () => {
   const [notes, setNotes] = useState([])
   const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
+  const [notification, setNotification] = useState({ message: null, type: '' })
 
   const hook = () => {
     //buscar todas las notas con un GET mediante service
@@ -34,9 +38,14 @@ const App = () => {
     noteService
       .create(noteObject)
       .then(data => {
-        console.log('post realizado: ', response)
+        console.log('post realizado: ', data)
         setNotes(notes.concat(data))
         setNewNote('')
+        //Notificar que se creo la nota exitosamente.
+        setNotification({message: `Note '${noteObject.content}' was added`, type: 'success'})
+        setTimeout(() => {
+          setNotification({ message: null, type: '' })
+        }, 5000)
       })
   }
 
@@ -56,9 +65,18 @@ const App = () => {
       .then(data => {
         //Setear el array de notas con la nota modificada.
         setNotes(notes.map(n => n.id === note.id ? data : n))
+        //notificar que se modifico la nota exitosamente.
+        setNotification({message: `Note '${note.content}' updated`, type: 'success'})
+        setTimeout(() => {
+          setNotification({ message: null, type: '' })
+        }, 5000)
       })
       .catch(error => {
-        alert(`the note '${note.content}' was already deleted from server`)
+        //Notificar si hubo algun error al modificar la nota.
+        setNotification({message: `Note '${note.content}' was already removed from server`, type: 'error'})
+        setTimeout(() => {
+          setNotification({ message: null, type: '' })
+        }, 5000)
         setNotes(notes.filter(n => n.id !== note.id)) 
       })
   }
@@ -69,6 +87,7 @@ const App = () => {
   return (
     <div>
       <h1>Notes</h1>
+      <Notification message={notification.message} type={notification.type}/>
       <div>
         <button onClick={() => setShowAll(!showAll)}>show {showAll ? 'important' : 'all'}</button>
       </div>
@@ -79,6 +98,7 @@ const App = () => {
         <input value={newNote} onChange={handleNoteChange}/>
         <button type="submit">save</button>
       </form>
+      <Footer/>
     </div>
   )
 }

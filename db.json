@@ -18,11 +18,26 @@
     {
       "id": "4",
       "content": "Nueva nota!",
-      "important": true
+      "important": false
     },
     {
       "id": "5",
       "content": "PogChamp",
+      "important": true
+    },
+    {
+      "id": "188c",
+      "content": "Nueva nota",
+      "important": false
+    },
+    {
+      "id": "81e9",
+      "content": "Nueva nota 2",
+      "important": true
+    },
+    {
+      "id": "18be",
+      "content": "Nueva nota 3",
       "important": true
     }
   ],
@@ -46,16 +61,6 @@
       "name": "Mary Poppendieck",
       "number": "39-23-6423122",
       "id": "4"
-    },
-    {
-      "name": "Jeronimo",
-      "number": "091843290",
-      "id": "5f5f"
-    },
-    {
-      "id": "9d2e",
-      "name": "Juan Margitic",
-      "number": "120-3-04"
     }
   ]
 }

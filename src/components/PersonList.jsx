@@ -1,7 +1,7 @@
 import React from 'react'
 import phonebookService from '../services/phonebook'
 
-const PersonList = ({ persons, busqueda, setPersons }) => {
+const PersonList = ({ persons, busqueda, setPersons, setNotificacion }) => {
 
   const handleDelete = (persona) => {
     console.log('Se presiono el boton para borrar a: ', persona.name)
@@ -11,6 +11,10 @@ const PersonList = ({ persons, busqueda, setPersons }) => {
       .then(data => {
         console.log('Se borro persona: ', data)
         setPersons(persons.filter(p => p.id !== persona.id))
+        setNotificacion({ message: 'Borrado exitoso', type: 'success' })
+        setTimeout(() => {
+          setNotificacion({ message: null, type: '' })
+        }, 5000)
       })
     }else{
       console.log(`No se borro a ${persona.name}`)

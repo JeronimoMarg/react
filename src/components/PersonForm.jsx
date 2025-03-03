@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
 import phonebookService from '../services/phonebook'
 
-const PersonForm = ({ persons, setPersons }) => {
+const PersonForm = ({ persons, setPersons, setNotificacion }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
   const cumple = (nombre, numero) => {
     if (nombre === '' || numero === '') {
-      alert("Completar ambos campos antes de agregar")
+      setNotificacion({message: 'Campo de nombre o numero vacios. Completar', tipo: 'error'})
+      setTimeout(() => {
+        setNotificacion({message: null, tipo: ''})
+      }, 5000)
       return false
     } else {
       return true
@@ -22,6 +25,7 @@ const PersonForm = ({ persons, setPersons }) => {
   const handleSubmit = (event) => {
     event.preventDefault()
     console.log("Boton agregar presionado", event.target)
+    //Ambos campos (nombre y numero) deben estar completos
     if(cumple(newName, newNumber)){
       const personaEncontrada = encontrarPersona(newName)
       //Si no existe el usuario con el nombre entonces se crea uno nuevo, haciendo un POST
@@ -38,6 +42,17 @@ const PersonForm = ({ persons, setPersons }) => {
             setPersons(persons.concat(data))
             setNewName('')
             setNewNumber('')
+            setNotificacion({message: 'Creacion de persona exitosa', tipo: 'success'})
+            setTimeout(() => {
+              setNotificacion({message: null, tipo: ''})
+            }, 5000)
+          })
+          //Si no se pudo hacer el POST correctamente, catch del error
+          .catch(error => {
+            setNotificacion({message: `No se pudo realizar el POST correctamente`, tipo: 'error'})
+            setTimeout(() => {
+              setNotificacion({message: null, tipo: ''})
+            }, 5000)
           })
       }
       //Si ya existe el usuario entonces se modifica el numero, haciendo un PUT
@@ -54,6 +69,22 @@ const PersonForm = ({ persons, setPersons }) => {
             setPersons(persons.map(p => p.id === data.id ? data : p))
             setNewName('')
             setNewNumber('')
+            setNotificacion({message: 'Modificacion de persona exitosa', tipo: 'success'})
+            setTimeout(() => {
+              setNotificacion({message: null, tipo: ''})
+            }, 5000)
+          })
+          //Si no se pudo hacer el PUT correctamente, catch del error.
+          //404 Si se desea modificar algo que ha sido borrado
+          .catch(error => {
+            if (error.response && error.response.status === 404) {
+              setNotificacion({message: 'Persona no encontrada. No se pudo modificar el numero', tipo: 'error'})
+            } else {
+              setNotificacion({message: 'No se pudo realizar la modificacion correctamente', tipo: 'error'})
+            }
+            setTimeout(() => {
+              setNotificacion({message: null, tipo: ''})
+            }, 5000)
           })
       }
     }
