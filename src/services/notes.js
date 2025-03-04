@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/notes'
+const baseUrl = '/api/notes'
 
 //NOTA: el metodo .then sobre una promise tambien devuelve una promise.
 

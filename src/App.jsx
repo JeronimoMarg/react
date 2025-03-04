@@ -23,6 +23,7 @@ const App = () => {
 
   //By default, effects run after every completed render, but you can choose to fire it only when certain values have changed.
   //The second parameter of useEffect is used to specify how often the effect is run. If the second parameter is an empty array [], then the effect is only run along with the first render of the component.
+  //The principle is that the effect is always executed after the first render of the component and when the value of the second parameter changes.
   useEffect(hook, [])
   console.log('render', notes.length, 'notes')
 
