@@ -5,6 +5,7 @@ const PersonForm = ({ persons, setPersons, setNotificacion }) => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
 
+  //Se puede delegar la validacion al backend. Aunque no seria mala idea hacerlo en el frontend
   const cumple = (nombre, numero) => {
     if (nombre === '' || numero === '') {
       setNotificacion({message: 'Campo de nombre o numero vacios. Completar', tipo: 'error'})
@@ -49,7 +50,8 @@ const PersonForm = ({ persons, setPersons, setNotificacion }) => {
           })
           //Si no se pudo hacer el POST correctamente, catch del error
           .catch(error => {
-            setNotificacion({message: `No se pudo realizar el POST correctamente`, tipo: 'error'})
+            console.log(error.response.data.error)
+            setNotificacion({message: `No se pudo realizar la creacion, motivo: ${error.response.data.error}`, tipo: 'error'})
             setTimeout(() => {
               setNotificacion({message: null, tipo: ''})
             }, 5000)
@@ -77,11 +79,8 @@ const PersonForm = ({ persons, setPersons, setNotificacion }) => {
           //Si no se pudo hacer el PUT correctamente, catch del error.
           //404 Si se desea modificar algo que ha sido borrado
           .catch(error => {
-            if (error.response && error.response.status === 404) {
-              setNotificacion({message: 'Persona no encontrada. No se pudo modificar el numero', tipo: 'error'})
-            } else {
-              setNotificacion({message: 'No se pudo realizar la modificacion correctamente', tipo: 'error'})
-            }
+            console.log(error.response.data.error)
+            setNotificacion({message: `No se pudo realizar la modificacion, motivo: ${error.response.data.error}`, tipo: 'error'})
             setTimeout(() => {
               setNotificacion({message: null, tipo: ''})
             }, 5000)

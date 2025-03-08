@@ -16,6 +16,10 @@ const PersonList = ({ persons, busqueda, setPersons, setNotificacion }) => {
           setNotificacion({ message: null, type: '' })
         }, 5000)
       })
+      .catch(error => {
+        console.log(error.response.data.error)
+        setNotificacion({message: `No se pudo realizar el borrado, motivo: ${error.response.data.error}`, tipo: 'error'})
+      })
     }else{
       console.log(`No se borro a ${persona.name}`)
     }
